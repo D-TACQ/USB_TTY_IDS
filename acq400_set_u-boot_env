@@ -1,5 +1,7 @@
 #!/usr/bin/expect
 
+puts "acq400_set_u-boot_env R1001"
+
 proc has_eth1 {model} {
 	return [string match "acq2*" $model]
 }
