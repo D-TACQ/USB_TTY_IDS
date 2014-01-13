@@ -13,10 +13,10 @@ set MCODE	"00"
 
 set MODEL	""
 set SERIAL	""
+set DTSN	""		
 
 set CMDS [list {}]
 set QUERIES [list {}]
-
 
 
 proc get_eth_addr {eth1} {
@@ -35,10 +35,11 @@ proc get_eth_addr {eth1} {
 
 
 proc build_env {} {
-	global MCODE MODEL SERIAL CMDS
+	global MCODE MODEL SERIAL CMDS DTSN
 	set hn "hostname=${MODEL}_${SERIAL}"
 	set ba "console=ttyPS0,115200 root=/dev/ram rw earlyprintk"
 	lappend CMDS "setenv hn $hn"
+	lappend CMDS "setenv dtsn $DTSN"
 	lappend CMDS "setenv bootargs $ba $hn"
 	if [has_eth1 $MODEL] {
 		lappend CMDS "setenv eth1addr [get_eth_addr 1]"
@@ -57,16 +58,37 @@ proc get_env {} {
 	lappend QUERIES "echo \$ethaddr"
 	lappend QUERIES "echo \$devicetree_image"
 }
+
+proc set_dtsn {} {
+	global MCODE MODEL SERIAL DTSN EXTRA
+	set fmt "unknown"
+	set ct CE
+	if { $EXTRA == F } {
+		set ct CF
+	}
+
+	switch $MODEL {
+		acq2006 { set fmt %s406%04d }
+		acq2106 { set fmt %s416%04d }
+		acq2106 { set fmt %s426%04d }
+		acq1001 { set fmt %s401%04d }
+		acq1101	{ set fmt %s411%04d }	
+		default { 
+			error "ERROR: model not included" 			
+		}
+	}
+	set DTSN [format $fmt $ct $SERIAL]
+}
+
 proc is_valid_model {model serial} {
-	global MCODE MODEL SERIAL
+	global MCODE MODEL SERIAL 
 #	puts "is_valid run model:$model serial:$serial"
 	switch $model {
 		acq2006 { set MCODE 11 }
 		acq1001 { set MCODE 12 }
 		acq1002 { set MCODE 12 }
 		default {
-			puts "model $model not accepted"
-			return 0
+			error "model $model not accepted"
 		}
 	}
 	set MODEL $model
@@ -75,20 +97,42 @@ proc is_valid_model {model serial} {
 #		puts "serial $serial is valid 3 digits"
 		if {$serial >= 1 && $serial <= 999} {
 #			puts "serial $serial in range"
-			set SERIAL $serial
+			set SERIAL $serial			
+			set_dtsn 
 			return 1
 		}
 	}
 	return 0
 }
 proc dummy_run {model serial} {
+	global CMDS
+
 	if {[is_valid_model $model $serial]} {
-		foreach {cmd} [build_env] {
+		build_env
+		foreach cmd $CMDS {
 			puts $cmd
 		}
+	} else {
+		puts "ERROR: not valid model $model $serial"
 	}
 }
 
+proc do_label {model serial} {
+	global CMDS DTSN
+	set label {| }
+	if {[is_valid_model $model $serial]} {
+		build_env
+		append label "model: $model "
+		append label "sn: $DTSN"	
+		append label { } "mac0: " [get_eth_addr 0]
+		if [has_eth1 $model] {
+			append label { } "mac1: " [get_eth_addr 1]
+		}
+		
+	}
+	append label { |}
+	puts $label
+}
 
 set timeout 	10
 set UPROMPT	{acq2006-uboot>}
@@ -184,7 +228,7 @@ proc set_uboot_env {devspec model serial} {
 			puts "dropping out to u-boot prompt on timeout"
 		}
 	}
-	puts "to drop the line: CTRL-\\cquit [control-backslash c quit]"
+	puts "to drop the line: CTRL-\\cquit \[control-backslash c quit\]"
 	interact
 }
 
@@ -201,17 +245,19 @@ proc show_uboot_env {devspec} {
 set argc [llength $argv]
 
 if {$argc < 2} {
-	puts "usage acq400_set_u-boot_env CMD TTYACQ"
+	puts "usage acq400_set_u-boot_env CMD TTYACQ [EXTRA]"
 	puts "	CMD: dry-run|load|show|manual"
 	puts "first use udev to configure a /dev/tty_acqXXXX_XXX link for UUT"
 	puts "example usage"
 	puts "acq400_set_u-boot_env load acq2006_001 :"
 	puts "	 configures acq2006_001"
+	puts "EXTRA : F : for FMC (not ELF)
 	exit -1
 }
 
 set command [lindex $argv 0]
 set devspec [lindex $argv 1]
+set EXTRA   [lindex $argv 2]
 set fields [split $devspec '_']
 if {[llength $fields] != 2 } {
 	puts "$devspec does not conform to standard"
@@ -219,10 +265,16 @@ if {[llength $fields] != 2 } {
 }  
 lassign $fields model serial
 
+
 set tty /dev/tty_$devspec
 switch $command {
-	load { set_uboot_env $tty $model $serial }
+	load { 
+		set_uboot_env $tty $model $serial 
+		do_label $model $serial
+	}
 	show { show_uboot_env  $tty }
 	manual { manual $tty }
-	*    { dummy_run $model $serial }
+	dry-run { dummy_run $model $serial }
+	label  { do_label $model $serial }
+	default { dummy_run $model $serial }
 }
