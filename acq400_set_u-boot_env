@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-puts "acq400_set_u-boot_env R1001"
+puts "acq400_set_u-boot_env R1002"
 
 proc has_eth1 {model} {
 	return [string match "acq2*" $model]
@@ -48,6 +48,8 @@ proc build_env {} {
 	}
 	lappend CMDS "setenv ethaddr [get_eth_addr 0]"
 	lappend CMDS "setenv devicetree_image [get_dt_image $MODEL]"
+# we're going to run u-boot from QSPI, then switch to sd:
+	lappend CMDS "setenv bootcmd run sdboot"
 }
 
 proc get_env {} {
@@ -210,7 +212,7 @@ proc set_uboot_env {devspec model serial} {
                         }
 		}
 	}
-	send_user "looks OK?"
+	send_user "looks OK  enter y\<CR\>\?"
 	set timeout 5
 	expect_user {
 		-re "y\n" {
@@ -247,7 +249,7 @@ proc show_uboot_env {devspec} {
 set argc [llength $argv]
 
 if {$argc < 2} {
-	puts "usage acq400_set_u-boot_env CMD TTYACQ [EXTRA]"
+	puts "usage acq400_set_u-boot_env CMD TTYACQ \[EXTRA\]"
 	puts "	CMD: dry-run|load|show|manual"
 	puts "first use udev to configure a /dev/tty_acqXXXX_XXX link for UUT"
 	puts "example usage"
