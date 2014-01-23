@@ -41,7 +41,7 @@ proc get_eth_addr {eth1} {
 	return $mac
 }
 
-proc spawn {command} {
+proc getosval {command} {
     set sp [open |$command r]
     set rc [gets $sp]
     close $sp
@@ -52,8 +52,8 @@ proc build_env {} {
 	global MCODE MODEL SERIAL CMDS DTSN VERSION
 	set hn "hostname=${MODEL}_${SERIAL}"
 	set ba "console=ttyPS0,115200 root=/dev/ram rw earlyprintk"
-	set user [spawn whoami]
-	set hn [spawn hostname]
+	set user [getosval whoami]
+	set hn [getosval hostname]
 	lappend CMDS "setenv dtenvid \"$user@$hn $VERSION [clock format [clock seconds]]\""
 	lappend CMDS "setenv hn $hn"
 	lappend CMDS "setenv dtsn $DTSN"
