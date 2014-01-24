@@ -52,9 +52,9 @@ proc build_env {} {
 	global MCODE MODEL SERIAL CMDS DTSN VERSION
 	set hn "hostname=${MODEL}_${SERIAL}"
 	set ba "console=ttyPS0,115200 root=/dev/ram rw earlyprintk"
-	set user [getosval whoami]
-	set hn [getosval hostname]
-	lappend CMDS "setenv dtenvid \"$user@$hn $VERSION [clock format [clock seconds]]\""
+	set puser [getosval whoami]
+	set phn [getosval hostname]
+	lappend CMDS "setenv dtenvid \"$puser@$phn $VERSION [clock format [clock seconds]]\""
 	lappend CMDS "setenv hn $hn"
 	lappend CMDS "setenv dtsn $DTSN"
 	lappend CMDS "setenv bootargs $ba $hn"
@@ -159,18 +159,22 @@ set S_tty 	{}
 
 proc connect {mytty} {
 	global UPROMPT connections expect_out S_tty
-
+	
+	while {1} {
 	while {![file exists $mytty]} {
 		puts "waiting for $mytty"
 		sleep 1
 	}
+	set tty_good 1
 	spawn kermit -l $mytty -b 115200 -c
 	set connections($mytty) $spawn_id
+	send { }
 	send " \r"
+	puts "Waiting for kermit spacebar prompt"
 	while {1} {
 		expect {
 			"Press the spacebar to stop ACQ2006 autoboot" {
-				send { }
+				send " \r"
 				expect {
 					$UPROMPT {
 						puts "OK"
@@ -182,11 +186,18 @@ proc connect {mytty} {
 					}
 				}
 			}
+			"C-Kermit>" {
+				    puts "line drop"
+				    send "quit\r"
+				    break
+			}
 			$UPROMPT {
+				puts "OK - at u-boot already"				 
 				return;
 			}
 		}
 		puts "waiting for boot"
+	}
 	}
 }
 
@@ -227,8 +238,10 @@ proc set_uboot_env {devspec model serial} {
                         }
 		}
 	}
-	send_user "looks OK  enter y\<CR\>\?"
-	set timeout 5
+	send " \r"
+	puts "\n---------------------------------------"
+	send_user "\n\n*** looks OK\?  enter y\<CR\>"
+	set timeout 10
 	expect_user {
 		-re "y\n" {
 			send "saveenv\r"
