@@ -1,0 +1,8 @@
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L50P", SYMLINK+="tty_acq1001_001"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L2Z4", SYMLINK+="tty_acq1001_002"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L50U", SYMLINK+="tty_acq1001_003"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51X", SYMLINK+="tty_acq1001_004"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L30A", SYMLINK+="tty_acq1001_005"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L38V", SYMLINK+="tty_acq1001_006"
+
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L52F", SYMLINK+="tty_acq1001_008"

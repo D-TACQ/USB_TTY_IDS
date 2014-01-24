@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L39C", SYMLINK+="tty_rtm-t_037"
