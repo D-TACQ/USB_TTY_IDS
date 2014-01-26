@@ -50,7 +50,7 @@ proc getosval {command} {
 
 proc build_env {} {
 	global MCODE MODEL SERIAL CMDS DTSN VERSION
-	set hn "hostname=${MODEL}_${SERIAL}"
+	set hn "hostname=[format "${MODEL}_%03d" ${SERIAL}]"
 	set ba "console=ttyPS0,115200 root=/dev/ram rw earlyprintk"
 	set puser [getosval whoami]
 	set phn [getosval hostname]
@@ -114,6 +114,8 @@ proc is_valid_model {model serial} {
 
 	if {[regexp "\[0-9\]{3}" $serial]} {
 #		puts "serial $serial is valid 3 digits"
+# avoid octal embarrasment
+		scan $serial %d serial
 		if {$serial >= 1 && $serial <= 999} {
 #			puts "serial $serial in range"
 			set SERIAL $serial			
@@ -241,7 +243,7 @@ proc set_uboot_env {devspec model serial} {
 	send " \r"
 	puts "\n---------------------------------------"
 	send_user "\n\n*** looks OK\?  enter y\<CR\>"
-	set timeout 10
+	set timeout 30
 	expect_user {
 		-re "y\n" {
 			send "saveenv\r"
