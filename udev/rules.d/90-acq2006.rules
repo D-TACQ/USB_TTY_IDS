@@ -9,3 +9,4 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L50C", SYMLINK+="tty_acq2006_008"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3AE", SYMLINK+="tty_acq2006_009"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51W", SYMLINK+="tty_acq2006_010"
 
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3B3", SYMLINK+="tty_acq2006_018"
