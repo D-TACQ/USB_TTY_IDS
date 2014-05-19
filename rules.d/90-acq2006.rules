@@ -1,0 +1,11 @@
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L38R", SYMLINK+="tty_acq2006_001" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3AL", SYMLINK+="tty_acq2006_002" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3BZ", SYMLINK+="tty_acq2006_003" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3BT", SYMLINK+="tty_acq2006_004" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3C4", SYMLINK+="tty_acq2006_005" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51C", SYMLINK+="tty_acq2006_006" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3C1", SYMLINK+="tty_acq2006_007" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L50C", SYMLINK+="tty_acq2006_008" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3AE", SYMLINK+="tty_acq2006_009" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51W", SYMLINK+="tty_acq2006_010" RUN+="/usr/local/bin/make-tty-symlink"
+
