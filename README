@@ -11,22 +11,31 @@ lockers
 How it works:
 
 plug in a usb console ..
-1 udev picks it up and makes a match from /etc/udev/rules.d
+
+udev matches a line like this
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L39A", SYMLINK+="tty_acq1001_009" RUN+="/usr/local/bin/make-tty-symlink"
+
+1 udev picks it up and makes a match from /etc/udev/rules.d, creates a symlink in /dev
 2 then it runs the script make-tty-symlink
 
 example
 
-Plug in console for acq1001_030
+Plug in console for acq1001_009
 
-1: makes the link:
-/dev/tty_acq1001_030 -> ttyUSB1
+First:  SYMLINK+="tty_acq1001_009"
+/dev/tty_acq1001_009 -> ttyUSB1
 
 ... this is the real value of this system, auto-tracks changing ttyUSBx
 
-2: makes the link:
-/usr/local/bin/tty_acq1001_030 -> kermit-ttySx-115200
+Second: RUN+="/usr/local/bin/make-tty-symlink"
+/usr/local/bin/tty_acq1001_009 -> kermit-ttySx-115200
 
-Now simply type tty_acq1001_030 to connect direct to the console wiith one command.
+Now simply type tty_acq1001_009 to connect direct to the console wiith one command.
+
+make-tty-symlink is able to select the correct baud rate based on model type.
+
+On unplug, udev removes the links and runs the script again. This time the link is removed
+(actually, so far it doesn't, but it could do)
 
 Making it really smooth:
 - check you have the correct group membership to use the console
