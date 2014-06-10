@@ -41,7 +41,7 @@ do
 		make_link kermit-ttySx-115200 $dl
 		break
 	fi
-	if [ "$dl" !- "${dl#/dev/tty_rtm-t_*}" ]; then
+	if [ "$dl" != "${dl#/dev/tty_rtm-t_*}" ]; then
 		make_link kermit-ttySx $dl
 		break
 	fi
