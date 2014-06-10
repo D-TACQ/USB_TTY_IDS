@@ -12,12 +12,22 @@ make_link() {
 	dev=${2#/dev/*}
 
 	exe=$EDIR/$dev
-	log $dl located dev is $dev create $exe
-	if [ ! -e $exe ]; then
-		cd $EDIR
-		ln -s kermit-ttySx-115200 $dev
-	fi
+
+	case $ACTION in
+	add)
+		log $dl located dev is $dev create $exe
+		if [ ! -e $exe ]; then
+			cd $EDIR
+			ln -s kermit-ttySx-115200 $dev
+		fi;;
+	remove)
+		log $dl remove $exe
+		rm $exe;;
+	esac
 }
+# comment in next line for debug
+echo hello >>/tmp/make-tty-symlink.log
+env >>/tmp/make-tty-symlink.log
 
 
 for dl in $DEVLINKS
