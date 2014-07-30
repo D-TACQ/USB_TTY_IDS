@@ -1,10 +1,14 @@
 #!/bin/bash
 #configTTY.sh
 
-read -p "Specify Carrier board. 2006 or 1001 : " carrier
-if [ "$carrier" != "2006" ] && [ "$carrier" != "1001" ]; then
-	echo -e "\e[31mError! Carrier board invalid. Please enter 1001 or 2006.\n"; tput sgr0
+read -p "Specify Carrier board. 2006, 1001 or rtm-t : " carrier
+if [ "$carrier" != "2006" ] && [ "$carrier" != "1001" ] &&  [ "$carrier" != "rtm-t" ]; then
+	echo -e "\e[31mError! Carrier board invalid. Valid entries : 1001,2006,rtm-t.\n"; tput sgr0
 	#exit 0
+fi
+
+if [ "$carrier" != "[12][0-2]0[16]}" ]; then
+	$carrier=acq$carrier
 fi
 
 serial_num=$(tail /var/log/messages | grep "SerialNumber:" | tail -c 9)
@@ -15,8 +19,8 @@ if [ "$serial_num" != "" ]; then
 	
 	if [[ $board_num =~ ^[0-9][0-9][0-9]$ ]]; then
 
-		echo "SUBSYSTEMS==\"usb\", ATTRS{serial}==\"${serial_num}\", SYMLINK+=\"tty_acq${carrier}_${board_num}\" RUN+=\"/usr/local/bin/make-tty-symlink\"" \
-		>> /etc/udev/rules.d/90-acq${carrier}.rules
+		echo "SUBSYSTEMS==\"usb\", ATTRS{serial}==\"${serial_num}\", SYMLINK+=\"tty_${carrier}_${board_num}\" RUN+=\"/usr/local/bin/make-tty-symlink\"" \
+		>> /etc/udev/rules.d/90-${carrier}.rules
 		
 		udevadm trigger
 
