@@ -1,1 +1,0 @@
-SUBSYSTEMS=="usb", ATTRS{product}=="WGM-201", SYMLINK+="wgm201"
