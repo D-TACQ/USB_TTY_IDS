@@ -7,11 +7,11 @@ if [ "$carrier" != "2006" ] && [ "$carrier" != "1001" ] &&  [ "$carrier" != "rtm
 	#exit 0
 fi
 
-if [ "$carrier" != "[12][0-2]0[16]}" ]; then
-	$carrier=acq$carrier
+if [[ $carrier =~ ^[12][0-2]0[16]$ ]]; then
+	carrier=acq$carrier
 fi
 
-serial_num=$(tail /var/log/messages | grep "SerialNumber:" | tail -c 9)
+serial_num=$(tail -12 /var/log/messages | grep "SerialNumber:" | tail -c 9)
 
 if [ "$serial_num" != "" ]; then
 	echo -e "\e[32mSerial Number = $serial_num\n"; tput sgr0
