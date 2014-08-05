@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-4et VERSION R1004
+set VERSION R1004
 puts "acq400_set_u-boot_env $VERSION"
 
 proc has_eth1 {model} {
