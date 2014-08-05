@@ -1,0 +1,7 @@
+#!/bin/bash
+#propagate_changes
+
+# Copies rules files and scripts from Git repo to system
+
+cp -v rules.d/* /etc/udev/rules.d
+cp -v bin/* /usr/local/bin

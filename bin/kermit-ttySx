@@ -1,0 +1,5 @@
+#!/bin/bash
+BR=${1:-38400}
+kermit -l /dev/`basename $0` -b $BR -c
+
+

@@ -1,0 +1,72 @@
+serial console automation : 
+connect direct to any console by name using a single tab-extendable command
+
+LEARN PHASE:
+run configTTY.sh
+user enters model and serial, configTTY.sh updates the database at /etc/udev/rules.d/90-*
+
+Do this once manually. Sync the updated rules.d data file back to git regularly.
+(eg once per batch?)
+
+
+RUN PHASE:
+plug in a usb console ..
+
+udev matches a line like this
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L39A", SYMLINK+="tty_acq1001_009" RUN+="/usr/local/bin/make-tty-symlink"
+
+1 udev picks it up and makes a match from /etc/udev/rules.d, creates a symlink in /dev
+2 then it runs the script make-tty-symlink
+
+example
+
+Plug in console for acq1001_009
+
+First:  SYMLINK+="tty_acq1001_009"
+/dev/tty_acq1001_009 -> ttyUSB1
+
+... this is the real value of this system, auto-tracks changing ttyUSBx
+
+Second: RUN+="/usr/local/bin/make-tty-symlink"
+
+script runs with ACTION=add, creates this link
+/usr/local/bin/tty_acq1001_009 -> kermit-ttySx-115200
+
+Now simply type tty_acq1001_009 to connect direct to the console with one command.
+
+There are two dynamically created links:
+1. The device node itself : /dev/tty_acqxxxx -> /dev/tty_USBx
+2. The command hotlink : /usr/local/bin/tty_acqxxxx -> kermit
+
+make-tty-symlink is able to select the correct baud rate based on model type.
+
+On unplug, udev removes the device link and runs the script again. 
+This time the command link is removed
+(make-tty-symlink runs with ACQTION=remove)
+
+
+
+INSTALL on a fresh console server
+git clone a working directory in your user
+copy rules.d/* host:/etc/udev/rules.d
+copy bin/*     host:/usr/local/bin
+make sure there's a working copy of kermit on the host machine.
+for a user to be able to USE the console, must be a member of groups
+dialout
+lockers
+
+How it works:
+Making it really smooth:
+- check you have the correct group membership to use the console
+- make a file ~/.kermrc:
+cat ~/.kermrc
+SET CARRIER-WATCH OFF
+
+Updates:
+- make a working directory copy of this git archive in a user directory
+(I wasn't brave enough to do this direct from /etc)
+- please update /etc/rules.d/90-acq* as we add more uuts
+- test, copy back to your user, check in and git-push
+
+WORKING DIRECTORY FOR rpi-002 set to : /root/USB_TTY_IDS
+

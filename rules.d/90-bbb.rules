@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb", ATTRS{serial}=="5B-2113BBBK0268", SYMLINK+="tty_bbb_001" RUN+="/usr/local/bin/make-tty-symlink"
