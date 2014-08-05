@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set VERSION R1003
+4et VERSION R1004
 puts "acq400_set_u-boot_env $VERSION"
 
 proc has_eth1 {model} {
@@ -62,7 +62,7 @@ proc build_env {} {
 		lappend CMDS "setenv eth1addr [get_eth_addr 1]"
 	}
 	lappend CMDS "setenv ethaddr [get_eth_addr 0]"
-	lappend CMDS "setenv devicetree_image [get_dt_image $MODEL]"
+	lappend CMDS "setenv devicetree_image dtb.d/[get_dt_image $MODEL]"
 # we're going to run u-boot from QSPI, then switch to sd:
 	lappend CMDS "setenv bootcmd run sdboot"
 }
