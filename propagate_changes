@@ -3,7 +3,9 @@
 
 # Copies rules files and scripts from Git repo to system
 
+echo ""
 cp -v rules.d/* /etc/udev/rules.d
 cp -v bin/* /usr/local/bin
-cp acq400_set_u-boot_env /usr/local/bin
+cp -v acq400_set_u-boot_env /usr/local/bin
+echo ""
 
