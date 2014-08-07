@@ -18,7 +18,7 @@ make_link() {
 		log $dl located dev is $dev create $exe
 		if [ ! -e $exe ]; then
 			cd $EDIR
-			ln -s kermit-ttySx-115200 $dev
+			ln -s $kwrapper $dev
 		fi;;
 	remove)
 		log $dl remove $exe
