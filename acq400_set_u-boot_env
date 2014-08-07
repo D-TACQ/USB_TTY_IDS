@@ -1,0 +1,314 @@
+#!/usr/bin/expect
+
+set VERSION R1004
+puts "acq400_set_u-boot_env $VERSION"
+
+proc has_eth1 {model} {
+	return [string match "acq2*" $model]
+}
+
+proc get_dt_image {model} {
+     	global EXTRA
+	if {[string first CELF $EXTRA] > -1} {	
+	   	return acq1002.dtb
+	} else {
+		return ${model}.dtb
+	}	
+}
+
+set MAC		"00:21:54"
+set MCODE	"00"
+
+set MODEL	""
+set SERIAL	""
+set DTSN	""		
+
+set CMDS [list {}]
+set QUERIES [list {}]
+
+
+proc get_eth_addr {eth1} {
+	global MAC MCODE SERIAL MODEL
+	set macsn [expr $SERIAL * 1]
+	if {[has_eth1 $MODEL]} {
+		set macsn [expr $macsn * 2]
+		set lsb [expr ($macsn-1)%250 +$eth1]
+	} else {
+		set lsb [expr $macsn % 250]
+	}
+	set msb [expr $macsn/250]
+	set mac ${MAC}:${MCODE}:[format "%02x" $msb]:[format "%02x" $lsb]
+	return $mac
+}
+
+proc getosval {command} {
+    set sp [open |$command r]
+    set rc [gets $sp]
+    close $sp
+    return $rc
+}
+
+proc build_env {} {
+	global MCODE MODEL SERIAL CMDS DTSN VERSION
+	set hn "hostname=[format "${MODEL}_%03d" ${SERIAL}]"
+	set ba "console=ttyPS0,115200 root=/dev/ram rw earlyprintk"
+	set puser [getosval whoami]
+	set phn [getosval hostname]
+	lappend CMDS "setenv dtenvid \"$puser@$phn $VERSION [clock format [clock seconds]]\""
+	lappend CMDS "setenv hn $hn"
+	lappend CMDS "setenv dtsn $DTSN"
+	lappend CMDS "setenv bootargs $ba $hn"
+	if [has_eth1 $MODEL] {
+		lappend CMDS "setenv eth1addr [get_eth_addr 1]"
+	}
+	lappend CMDS "setenv ethaddr [get_eth_addr 0]"
+	lappend CMDS "setenv devicetree_image dtb.d/[get_dt_image $MODEL]"
+# we're going to run u-boot from QSPI, then switch to sd:
+	lappend CMDS "setenv bootcmd run sdboot"
+}
+
+proc get_env {} {
+	global MODEL QUERIES
+	lappend QUERIES "echo \$hn"
+	lappend QUERIES "echo \$bootargs"
+	if [has_eth1 $MODEL] {
+		lappend QUERIES "echo \$eth1addr"
+	}
+	lappend QUERIES "echo \$ethaddr"
+	lappend QUERIES "echo \$devicetree_image"
+}
+
+proc set_dtsn {} {
+	global MCODE MODEL SERIAL DTSN EXTRA
+	set fmt "unknown"
+	set ct CE
+	if {[string first FMC $EXTRA] > -1} {	
+		set ct CF
+	}
+
+	switch $MODEL {
+		acq2006 { set fmt %s406%04d }
+		acq2106 { set fmt %s416%04d }
+		acq2106 { set fmt %s426%04d }
+		acq1001 { set fmt %s401%04d }
+		acq1101	{ set fmt %s411%04d }	
+		default { 
+			error "ERROR: model not included" 			
+		}
+	}
+	set DTSN [format $fmt $ct $SERIAL]
+}
+
+proc is_valid_model {model serial} {
+	global MCODE MODEL SERIAL 
+#	puts "is_valid run model:$model serial:$serial"
+	switch $model {
+		acq2006 { set MCODE 11 }
+		acq1001 { set MCODE 12 }
+		acq1002 { set MCODE 12 }
+		default {
+			error "model $model not accepted"
+		}
+	}
+	set MODEL $model
+
+	if {[regexp "\[0-9\]{3}" $serial]} {
+#		puts "serial $serial is valid 3 digits"
+# avoid octal embarrasment
+		scan $serial %d serial
+		if {$serial >= 1 && $serial <= 999} {
+#			puts "serial $serial in range"
+			set SERIAL $serial			
+			set_dtsn 
+			return 1
+		}
+	}
+	return 0
+}
+proc dummy_run {model serial} {
+	global CMDS
+
+	if {[is_valid_model $model $serial]} {
+		build_env
+		foreach cmd $CMDS {
+			puts $cmd
+		}
+	} else {
+		puts "ERROR: not valid model $model $serial"
+	}
+}
+
+proc do_label {model serial} {
+	global CMDS DTSN
+	set label {| }
+	if {[is_valid_model $model $serial]} {
+		build_env
+		append label "model: $model "
+		append label "sn: $DTSN"	
+		append label { } "mac0: " [get_eth_addr 0]
+		if [has_eth1 $model] {
+			append label { } "mac1: " [get_eth_addr 1]
+		}
+		
+	}
+	append label { |}
+	puts $label
+}
+
+set timeout 	10
+set UPROMPT	{acq2006-uboot>}
+set S_tty 	{}
+
+proc connect {mytty} {
+	global UPROMPT connections expect_out S_tty
+	
+	while {1} {
+	while {![file exists $mytty]} {
+		puts "waiting for $mytty"
+		sleep 1
+	}
+	set tty_good 1
+	spawn kermit -l $mytty -b 115200 -c
+	set connections($mytty) $spawn_id
+	send { }
+	send " \r"
+	puts "Waiting for kermit spacebar prompt"
+	while {1} {
+		expect {
+			"Press the spacebar to stop ACQ2006 autoboot" {
+				send " \r"
+				expect {
+					$UPROMPT {
+						puts "OK"
+						return;
+					}
+					timeout {
+						puts "ERROR timeout"
+						exit 1
+					}
+				}
+			}
+			"C-Kermit>" {
+				    puts "line drop"
+				    send "quit\r"
+				    break
+			}
+			$UPROMPT {
+				puts "OK - at u-boot already"				 
+				return;
+			}
+		}
+		puts "waiting for boot"
+	}
+	}
+}
+
+proc set_uboot_env {devspec model serial} {
+	global connections UPROMPT
+
+	if {![is_valid_model $model $serial]} {
+		puts "ERROR model not valid"
+		exit -1
+	}
+
+	puts "ready to program model:$model serial:$serial tty:$devspec"
+	connect $devspec
+	
+	puts "connected .."
+	puts "now set a bunch of environment variables\n"
+
+	set spawn_id $connections($devspec)
+	foreach {cmd} [build_env] {
+		send "$cmd\r"
+		expect {
+			$UPROMPT {
+				;
+			}
+			timeout {
+				puts "error, timeout"
+				exit -1
+			}
+		}
+	}
+
+	puts "\n and play them back .. \n"
+	foreach {cmd} [get_env] {
+		send "$cmd\r"
+		expect {
+                        $UPROMPT {
+                                ;
+                        }
+		}
+	}
+	send " \r"
+	puts "\n---------------------------------------"
+	send_user "\n\n*** looks OK\?  enter y\<CR\>"
+	set timeout 30
+	expect_user {
+		-re "y\n" {
+			send "saveenv\r"
+			expect {
+               		       	$UPROMPT {
+                        	       	;
+	                       	}
+        	       	}
+			puts "booting.."
+			send "boot\r"
+		}
+		-re "n\n" {
+			puts "dropping out to u-boot prompt"	
+		}
+		timeout {
+			puts "dropping out to u-boot prompt on timeout"
+		}
+	}
+	puts "to drop the line: CTRL-\\cquit \[control-backslash c quit\]"
+	interact
+}
+
+proc manual {devspec} {
+	global connections UPROMPT
+	connect $devspec
+	set spawn_id $connections($devspec)
+	interact
+}
+proc show_uboot_env {devspec} {
+	puts "show_uboot_env (STUB)"
+}
+
+set argc [llength $argv]
+
+if {$argc < 2} {
+	puts {usage acq400_set_u-boot_env CMD TTYACQ \[EXTRA\]}
+	puts "	CMD: dry-run|load|show|manual"
+	puts "first use udev to configure a /dev/tty_acqXXXX_XXX link for UUT"
+	puts "example usage"
+	puts "acq400_set_u-boot_env load acq2006_001 :"
+	puts "	 configures acq2006_001"
+	puts "EXTRA : FMC | CELF | FMC,CELF   no spaces"
+	exit -1
+}
+
+set command [lindex $argv 0]
+set devspec [lindex $argv 1]
+set EXTRA   [lindex $argv 2]
+set fields [split $devspec '_']
+if {[llength $fields] != 2 } {
+	puts "$devspec does not conform to standard"
+	exit -1;
+}  
+lassign $fields model serial
+
+
+set tty /dev/tty_$devspec
+switch $command {
+	load { 
+		set_uboot_env $tty $model $serial 
+		do_label $model $serial
+	}
+	show { show_uboot_env  $tty }
+	manual { manual $tty }
+	dry-run { dummy_run $model $serial }
+	label  { do_label $model $serial }
+	default { dummy_run $model $serial }
+}
