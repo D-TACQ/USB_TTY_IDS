@@ -17,8 +17,10 @@ make_link() {
 	add)
 		log $dl located dev is $dev create $exe
 		if [ ! -e $exe ]; then
-			cd $EDIR
-			ln -s $kwrapper $dev
+# this works because $PWD is EDIR, so use $dev rather than $exe as target
+# it also helps that $kwrapper is located in $EDIR too.
+# making the link in the local directory keeps it short and sweet
+			cd $EDIR; ln -s $kwrapper $dev
 		fi;;
 	remove)
 		log $dl remove $exe
