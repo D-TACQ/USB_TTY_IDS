@@ -89,7 +89,7 @@ proc set_dtsn {} {
 	switch $MODEL {
 		acq2006 { set fmt %s406%04d }
 		acq2106 { set fmt %s416%04d }
-		acq2106 { set fmt %s426%04d }
+		acq2206 { set fmt %s426%04d }
 		acq1001 { set fmt %s401%04d }
 		acq1101	{ set fmt %s411%04d }	
 		default { 
@@ -103,6 +103,8 @@ proc is_valid_model {model serial} {
 	global MCODE MODEL SERIAL 
 #	puts "is_valid run model:$model serial:$serial"
 	switch $model {
+		acq2206 { set MCODE 14 }
+		acq2106 { set MCODE 13 }
 		acq2006 { set MCODE 11 }
 		acq1001 { set MCODE 12 }
 		acq1002 { set MCODE 12 }
