@@ -1,3 +1,4 @@
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51H", SYMLINK+="tty_acq2106_001" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3BY", SYMLINK+="tty_acq2106_003" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3AW", SYMLINK+="tty_acq2106_002" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L38L", SYMLINK+="tty_acq2106_004" RUN+="/usr/local/bin/make-tty-symlink"
