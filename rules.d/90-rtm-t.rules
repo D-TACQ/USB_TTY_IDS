@@ -9,3 +9,4 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L52G", SYMLINK+="tty_rtm-t_049" RUN+="/us
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L2ZC", SYMLINK+="tty_rtm-t_048" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L52G", SYMLINK+="tty_rtm-t_049" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L516", SYMLINK+="tty_rtm-t_054" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L39W", SYMLINK+="tty_rtm-t_053" RUN+="/usr/local/bin/make-tty-symlink"
