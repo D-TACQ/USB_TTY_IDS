@@ -55,3 +55,6 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L30T", SYMLINK+="tty_acq1001_064" RUN+="/
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51J", SYMLINK+="tty_acq1001_060" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L2ZI", SYMLINK+="tty_acq1001_065" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L50D", SYMLINK+="tty_acq1001_066" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3BR", SYMLINK+="tty_acq1001_067" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3A9", SYMLINK+="tty_acq1001_068" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L51Y", SYMLINK+="tty_acq1001_069" RUN+="/usr/local/bin/make-tty-symlink"
