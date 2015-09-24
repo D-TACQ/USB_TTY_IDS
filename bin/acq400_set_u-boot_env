@@ -11,6 +11,8 @@ proc get_dt_image {model} {
      	global EXTRA
 	if {[string first CELF $EXTRA] > -1} {	
 	   	return acq1002.dtb
+	} elseif {[string compare $model acq2106]==0} {
+		return acq2106sfp.dtb
 	} else {
 		return ${model}.dtb
 	}	
