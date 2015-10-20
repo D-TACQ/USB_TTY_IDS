@@ -3,7 +3,7 @@
 
 echo ""
 cp -v /usr/local/bin/{configTTY.sh,kermit-ttySx,kermit-ttySx-115200,make-tty-symlink,acq400_set_u-boot_env} ./bin
-cp -v /etc/udev/rules.d/{90-acq1001.rules,90-acq2006.rules,90-acq2106.rules,90-acqZC706.rules,90-rtm-t.rules,90-zb.rules} ./rules.d
+cp -v /etc/udev/rules.d/{90-acq1001.rules,90-acq2006.rules,90-acq2106.rules,90-acqZC706.rules,90-cpsc.rules,90-rtm-t.rules,90-zb.rules} ./rules.d
 echo ""
 cp /usr/lib/cgi-bin/*consoles.cgi .
 
