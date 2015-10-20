@@ -1,0 +1,2 @@
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L7ND", SYMLINK+="tty_cpsc_153" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L9A8", SYMLINK+="tty_cpsc_152" RUN+="/usr/local/bin/make-tty-symlink"
