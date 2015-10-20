@@ -1,0 +1,3 @@
+set flow-control none
+set carrier-watch off
+
