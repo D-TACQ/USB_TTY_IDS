@@ -8,11 +8,25 @@ proc has_eth1 {model} {
 }
 
 proc get_dt_image {model} {
-     	global EXTRA
+     	global EXTRA stdin
 	if {[string first CELF $EXTRA] > -1} {	
 	   	return acq1002.dtb
 	} elseif {[string compare $model acq2106]==0} {
-		return acq2106sfp.dtb
+		set data ""
+		set valid 0 
+		puts "MGT482 present Y/N ?"
+		while {!$valid} {
+			gets stdin data
+			set valid [expr {($data == Y) || ($data == N)}]
+			if {!$valid} {
+		        	puts "Choose either Y or N"
+	    		}
+		}
+		if { $data == Y } {
+			return acq2106sfp.dtb
+		} else {
+			return acq2106.dtb
+		}
 	} else {
 		return ${model}.dtb
 	}	
