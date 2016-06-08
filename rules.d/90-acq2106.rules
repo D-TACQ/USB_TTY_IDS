@@ -24,3 +24,6 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9NE", SYMLINK+="tty_acq2106_033" RUN+="/
 SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9N8", SYMLINK+="tty_acq2106_037" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9NV", SYMLINK+="tty_acq2106_034" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9NX", SYMLINK+="tty_acq2106_035" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9NW", SYMLINK+="tty_acq2106_032" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9N6", SYMLINK+="tty_acq2106_031" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9N7", SYMLINK+="tty_acq2106_038" RUN+="/usr/local/bin/make-tty-symlink"
