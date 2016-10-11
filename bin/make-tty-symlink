@@ -59,6 +59,10 @@ do
                 make_link kermit-ttySx-115200 $dl
                 break
         fi
+	if [ "$dl" != "{dl#/dev/tty_kmcu*}" ]; then
+		make_link kermit-ttySx-115200 $dl
+		break
+	fi
 
 done
 

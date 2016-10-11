@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set VERSION R1005
+set VERSION R1006
 puts "acq400_set_u-boot_env $VERSION"
 
 proc has_eth1 {model} {
@@ -103,6 +103,7 @@ proc set_dtsn {} {
 	}
 
 	switch $MODEL {
+		kmcuz30 { set fmt %s430%04d }
 		kmcu { set fmt %s433%04d }
 		acq2006 { set fmt %s406%04d }
 		acq2106 { set fmt %s416%04d }
@@ -120,6 +121,7 @@ proc is_valid_model {model serial} {
 	global MCODE MODEL SERIAL 
 #	puts "is_valid run model:$model serial:$serial"
 	switch $model {
+		kmcuz30	{ set MCODE 16 }
 		kmcu	{ set MCODE 15 }
 		acq2206 { set MCODE 14 }
 		acq2106 { set MCODE 13 }
