@@ -23,6 +23,7 @@ if [ "$serial_num" != "" ]; then
 		>> /etc/udev/rules.d/90-${carrier}.rules
 		
 		udevadm trigger
+                udevadm control --reload
 
 		#ln -s /usr/local/bin/kermit-ttySx-115200 /usr/local/bin/tty_acq${carrier}_${board_num}
 		#ls -l /dev/tty_acq${carrier}_???
