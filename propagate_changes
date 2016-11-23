@@ -10,3 +10,7 @@ cp dot.kermrc /root/.kermrc
 cp showconsoles.cgi /var/www/cgi-bin/
 echo ""
 [ -e /usr/lib/cgi-bin/ ] && cp *.cgi /usr/lib/cgi-bin/
+
+echo -e "Reloading udev rules - 2 versions for different OS...\n"
+udevadm control --reload
+udevadm trigger
