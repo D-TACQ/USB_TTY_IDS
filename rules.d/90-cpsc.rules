@@ -13,3 +13,4 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L2ZD", SYMLINK+="tty_cpsc_168" RUN+="/usr
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3A4", SYMLINK+="tty_cpsc_169" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L30C", SYMLINK+="tty_cpsc_170" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L3A0", SYMLINK+="tty_cpsc_171" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AM01L52R", SYMLINK+="tty_cpsc_154" RUN+="/usr/local/bin/make-tty-symlink"
