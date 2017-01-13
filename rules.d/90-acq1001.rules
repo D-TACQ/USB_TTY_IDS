@@ -137,3 +137,4 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9OC", SYMLINK+="tty_acq1001_140" RUN+="/
 SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9NR", SYMLINK+="tty_acq1001_141" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9OE", SYMLINK+="tty_acq1001_142" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A502K9OP", SYMLINK+="tty_acq1001_143" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AH03OPWK", SYMLINK+="tty_acq1001_185" RUN+="/usr/local/bin/make-tty-symlink"
