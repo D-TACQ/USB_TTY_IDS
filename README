@@ -70,3 +70,11 @@ Updates:
 
 WORKING DIRECTORY FOR rpi-002 set to : /root/USB_TTY_IDS
 
+
+http://rpi-005/cgi-bin/showconsoles.cgi
+
+- install apache2
+- a2enmod cgi
+- service apache2 restart
+
+
