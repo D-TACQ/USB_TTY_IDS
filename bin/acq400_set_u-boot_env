@@ -48,11 +48,11 @@ proc get_eth_addr {eth1} {
 	set macsn [expr $SERIAL * 1]
 	if {[has_eth1 $MODEL]} {
 		set macsn [expr $macsn * 2]
-		set lsb [expr ($macsn-1)%250 +$eth1]
+		set lsb [expr ($macsn-1)%256 +$eth1]
 	} else {
-		set lsb [expr $macsn % 250]
+		set lsb [expr $macsn % 256]
 	}
-	set msb [expr $macsn/250]
+	set msb [expr $macsn/256]
 	set mac ${MAC}:${MCODE}:[format "%02x" $msb]:[format "%02x" $lsb]
 	return $mac
 }
