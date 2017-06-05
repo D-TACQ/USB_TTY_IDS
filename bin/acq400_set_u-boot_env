@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set VERSION R1007
+set VERSION R1006
 puts "acq400_set_u-boot_env $VERSION"
 
 proc has_eth1 {model} {
@@ -9,9 +9,7 @@ proc has_eth1 {model} {
 
 proc get_dt_image {model} {
      	global EXTRA stdin
-	if {[string first RADCELF $EXTRA] > -1} {
-		return acq1002r.dtb
-	} elseif {[string first CELF $EXTRA] > -1} {	
+	if {[string first CELF $EXTRA] > -1} {	
 	   	return acq1002.dtb
 	} elseif {[string compare $model acq2106]==0} {
 		set data ""
@@ -309,7 +307,7 @@ if {$argc < 2} {
 	puts "example usage"
 	puts "acq400_set_u-boot_env load acq2006_001 :"
 	puts "	 configures acq2006_001"
-	puts "EXTRA : FMC | CELF | FMC,CELF | RADCELF  no spaces"
+	puts "EXTRA : FMC | CELF | FMC,CELF   no spaces"
 	exit -1
 }
 
