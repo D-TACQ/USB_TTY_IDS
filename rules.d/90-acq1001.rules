@@ -306,3 +306,4 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="A600C1GI", SYMLINK+="tty_acq1001_304" RUN+="/
 SUBSYSTEMS=="usb", ATTRS{serial}=="A600C1GN", SYMLINK+="tty_acq1001_305" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A106WBOF", SYMLINK+="tty_acq1001_333" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A106WBOH", SYMLINK+="tty_acq1001_334" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A106WBOI", SYMLINK+="tty_acq1001_332" RUN+="/usr/local/bin/make-tty-symlink"
