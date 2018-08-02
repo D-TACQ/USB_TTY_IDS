@@ -1,0 +1,49 @@
+#!/usr/bin/expect
+
+set timeout -1
+set UPROMPT {acq200>}
+
+set S_tty {}
+
+proc bootmon:connect {mytty} {
+        global UPROMPT connections expect_out S_tty
+        spawn $mytty
+
+        set connections($mytty) $spawn_id
+        set S_tty $mytty
+
+	while {1} {
+	        expect {
+			"acq* login:" {
+				puts "Success"
+				puts "Continuing to monitor the tty..."
+#				exit 0
+	                }
+			"^.*" {
+				puts $expect_out(buffer)
+			}
+			timeout {
+				puts "Timeout"
+				exit 1
+			}
+		}
+        }
+}
+
+set argc [llength $argv]
+
+if {$argc < 1} {
+        puts "bootmon TTY [timeout]"
+        exit -1
+}
+set TTY [lindex $argv 0]
+
+if {$argc >= 2} {
+	set timeout [lindex $argv 1]
+}
+
+
+
+
+bootmon:connect $TTY
+
