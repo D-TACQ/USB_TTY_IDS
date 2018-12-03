@@ -1,0 +1,25 @@
+#!/bin/bash
+# kermit konsole
+# kk acq1001_123
+# kk tty_acq1001_123
+# kk /dev/tty_acq1001_123
+
+if [ "x$1" = "x" ]; then
+	echo "USAGE: kk UUT"
+	exit 1
+fi
+UUT=$(basename $1)
+
+if [ -e /dev/tty_${UUT} ]; then
+	TTY=/dev/tty_${UUT}
+elif [ -e /dev/${UUT} ]; then
+	TTY=/dev/${UUT}
+else
+	echo "TTY for $UUT NOT FOUND"
+	exit 1
+fi
+
+BR=115200
+kermit -l $TTY -b $BR -c
+
+   	 
