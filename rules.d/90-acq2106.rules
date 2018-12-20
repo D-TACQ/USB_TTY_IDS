@@ -131,3 +131,6 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="A106WGC3", SYMLINK+="tty_acq2106_136" RUN+="/
 SUBSYSTEMS=="usb", ATTRS{serial}=="A106WGCA", SYMLINK+="tty_acq2106_142" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A106WGCB", SYMLINK+="tty_acq2106_146" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="AK05M1F9", SYMLINK+="tty_acq2106_122" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A106WGC5", SYMLINK+="tty_acq2106_137" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A106WGCO", SYMLINK+="tty_acq2106_138" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A106WGC4", SYMLINK+="tty_acq2106_139" RUN+="/usr/local/bin/make-tty-symlink"
