@@ -1,8 +1,8 @@
 #!/bin/bash
 #configTTY.sh
 
-read -p "Specify Carrier board. 2006, 2106, 1001, cpsc or rtm-t : " carrier
-if [ "$carrier" != "2006" ] && [ "$carrier" != "1001" ] && [ "$carrier" != "2106" ] && [ "$carrier" != "cpsc" ] && [ "$carrier" != "rtm-t" ]; then
+read -p "Specify Carrier board. 2006, 2106, 1001, cpsc, cpsc2 or rtm-t : " carrier
+if [ "$carrier" != "2006" ] && [ "$carrier" != "1001" ] && [ "$carrier" != "2106" ] && [ "$carrier" != "cpsc" ] && [ "$carrier" != "rtm-t" ] && [ "$carrier" != "cpsc2" ]; then
 	echo -e "\e[31mError! Carrier board invalid. Valid entries : 1001,2006,2106,cpsc,rtm-t.\n"; tput sgr0
 	#exit 0
 fi
