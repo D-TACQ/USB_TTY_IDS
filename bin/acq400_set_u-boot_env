@@ -1,10 +1,10 @@
 #!/usr/bin/expect
 
-set VERSION R1008
+set VERSION R1009
 puts "acq400_set_u-boot_env pgm $VERSION"
 
 proc has_eth1 {model} {
-	return [string match "acq20*" $model]
+	return [string match "acq2*" $model]
 }
 
 proc get_dt_image {model} {
