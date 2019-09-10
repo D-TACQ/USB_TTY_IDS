@@ -317,7 +317,7 @@ if {$argc < 2} {
 	puts "example usage"
 	puts "acq400_set_u-boot_env load acq2006_001 :"
 	puts "	 configures acq2006_001"
-	puts "EXTRA : FMC | CELF | FMC,CELF | RADCELF  no spaces"
+	puts "EXTRA : FMC|CELF|FMC,CELF|RADCELF|ACQ436|MGT482|MGTDRAM no spaces"
 	exit -1
 }
 
