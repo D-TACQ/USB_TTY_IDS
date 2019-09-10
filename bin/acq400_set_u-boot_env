@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set VERSION R1007
+set VERSION R1008
 puts "acq400_set_u-boot_env pgm $VERSION"
 
 proc has_eth1 {model} {
@@ -14,6 +14,14 @@ proc get_dt_image {model} {
 	} elseif {[string first CELF $EXTRA] > -1} {	
 	   	return acq1002.dtb
 	} elseif {[string compare $model acq2106]==0} {
+		if {[string first ACQ436 $EXTRA] > -1} {
+			return acq210612.dtb
+		} elseif {[string first MGT482 $EXTRA] > -1} {
+			return acq2106sfp.dtb
+		} elseif {[string first MGTDRAM $EXTRA] > -1} {
+			return acq2106.dtb
+		}
+		# else prompt for it
 		set data ""
 		set valid 0 
 		puts "MGT482 present Y/N ?"
