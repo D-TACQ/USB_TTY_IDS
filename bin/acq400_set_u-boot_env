@@ -144,12 +144,21 @@ proc is_valid_model {model serial} {
 	}
 	set MODEL $model
 
+	if {[regexp "\[0-9\]{4}" $serial]} {
+#		puts "serial $serial is valid 3 digits"
+# avoid octal embarrasment
+		scan $serial %d serial
+		if {$serial >= 1 && $serial <= 9999} {
+			set SERIAL $serial			
+			set_dtsn 
+			return 1
+		}
+	}
 	if {[regexp "\[0-9\]{3}" $serial]} {
 #		puts "serial $serial is valid 3 digits"
 # avoid octal embarrasment
 		scan $serial %d serial
 		if {$serial >= 1 && $serial <= 999} {
-#			puts "serial $serial in range"
 			set SERIAL $serial			
 			set_dtsn 
 			return 1
