@@ -1,0 +1,67 @@
+#!/usr/bin/expect
+
+log_user 0
+
+set VERSION R1001
+puts "acq400_boot_tracker_ pgm $VERSION"
+
+set UPROMPT	{acq2006-uboot>}
+set S_tty 	{}
+
+proc connect {mytty} {
+	global UPROMPT connections expect_out S_tty
+	set fn "/dev/tty_$mytty"
+	
+	while {![file exists $fn]} {
+		puts "waiting for $fn"
+		sleep 1
+	}
+	set tty_good 1
+	spawn kermit -l $fn -b 115200 -c
+	set connections($mytty) $spawn_id
+}
+
+set msec_boot 0
+
+proc prefix {} {
+	global msec_boot
+	set _date [timestamp -format %Y%m%d:%H:%M:%S]
+	if { $msec_boot == 0 } {
+		set elapsed 0
+	} else {
+		set elapsed [expr [clock clicks -milliseconds] - $msec_boot]
+	}
+	
+	return "$_date [format {%8.3f} [expr $elapsed/1000.0] ] #"
+}
+
+set timeout 60
+
+proc tracker {devspec} {
+	global msec_boot connections
+	set spawn_id $connections($devspec)
+	while { 1 } {
+		expect -re "Xilinx First Stage Boot Loader.*\r\n" {
+			set msec_boot [clock clicks -milliseconds]
+			puts -nonewline "[prefix] $expect_out(buffer)"
+		} -re "\r\n" {
+			puts -nonewline "[prefix] $expect_out(buffer)"
+		} timeout {
+			puts "[prefix] .."
+		}
+	}
+}
+
+set argc [llength $argv]
+
+if {$argc < 1} {
+	puts {usage acq400_boot_tracker TTYACQ}
+	exit -1
+}
+
+set devspec [lindex $argv 0]
+
+connect $devspec
+tracker $devspec
+
+
