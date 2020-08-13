@@ -94,6 +94,11 @@ proc build_env {} {
 	lappend CMDS "setenv EBREAK yes"
 }
 
+proc release_env {} {
+	global CMDS
+	lappend CMDS "setenv EBREAK"
+}
+
 proc get_env {} {
 	global MODEL QUERIES
 	lappend QUERIES "echo \$hn"
@@ -348,6 +353,7 @@ switch $command {
 		set_uboot_env $tty $model $serial [build_env]
 		do_label $model $serial
 	}
+	release { set_uboot_env $tty $model $serial [release_env]
 	show { show_uboot_env  $tty }
 	manual { manual $tty }
 	dry-run { dummy_run $model $serial }
