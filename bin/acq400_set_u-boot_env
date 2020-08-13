@@ -91,6 +91,7 @@ proc build_env {} {
 	lappend CMDS "setenv devicetree_image dtb.d/[get_dt_image $MODEL]"
 # we're going to run u-boot from QSPI, then switch to sd:
 	lappend CMDS "setenv bootcmd run sdboot"
+	lappend CMDS "setenv EBREAK yes"
 }
 
 proc get_env {} {
