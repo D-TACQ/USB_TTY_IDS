@@ -245,7 +245,7 @@ proc connect {mytty} {
 	}
 }
 
-proc set_uboot_env {devspec model serial} {
+proc set_uboot_env {devspec model serial cmds} {
 	global connections UPROMPT
 
 	if {![is_valid_model $model $serial]} {
@@ -260,7 +260,7 @@ proc set_uboot_env {devspec model serial} {
 	puts "now set a bunch of environment variables\n"
 
 	set spawn_id $connections($devspec)
-	foreach {cmd} [build_env] {
+	foreach {cmd} $cmds  {
 		send "$cmd\r"
 		expect {
 			$UPROMPT {
@@ -345,7 +345,7 @@ lassign $fields model serial
 set tty /dev/tty_$devspec
 switch $command {
 	load { 
-		set_uboot_env $tty $model $serial 
+		set_uboot_env $tty $model $serial [build_env]
 		do_label $model $serial
 	}
 	show { show_uboot_env  $tty }
