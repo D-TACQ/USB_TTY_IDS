@@ -347,6 +347,11 @@ if {[llength $fields] != 2 } {
 lassign $fields model serial
 
 
+if {![is_valid_model $model $serial]} {
+	puts "ERROR model not valid"
+	exit -1
+}
+
 set tty /dev/tty_$devspec
 switch $command {
 	load { 
