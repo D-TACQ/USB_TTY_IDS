@@ -94,6 +94,11 @@ proc build_env {} {
 	lappend CMDS "setenv EBREAK yes"
 }
 
+proc release_env {} {
+	global CMDS
+	lappend CMDS "setenv EBREAK"
+}
+
 proc get_env {} {
 	global MODEL QUERIES
 	lappend QUERIES "echo \$hn"
@@ -205,47 +210,47 @@ proc connect {mytty} {
 	global UPROMPT connections expect_out S_tty
 	
 	while {1} {
-	while {![file exists $mytty]} {
-		puts "waiting for $mytty"
-		sleep 1
-	}
-	set tty_good 1
-	spawn kermit -l $mytty -b 115200 -c
-	set connections($mytty) $spawn_id
-	send { }
-	send " \r"
-	puts "Waiting for kermit spacebar prompt"
-	while {1} {
-		expect {
-			"Press the spacebar to stop ACQ2006 autoboot" {
-				send " \r"
-				expect {
-					$UPROMPT {
-						puts "OK"
-						return;
-					}
-					timeout {
-						puts "ERROR timeout"
-						exit 1
+		while {![file exists $mytty]} {
+			puts "waiting for $mytty"
+			sleep 1
+		}
+		set tty_good 1
+		spawn kermit -l $mytty -b 115200 -c
+		set connections($mytty) $spawn_id
+		send { }
+		send " \r"
+		puts "Waiting for kermit spacebar prompt"
+		while {1} {
+			expect {
+				"Press the spacebar to stop ACQ2006 autoboot" {
+					send " \r"
+					expect {
+						$UPROMPT {
+							puts "OK"
+							return;
+						}
+						timeout {
+							puts "ERROR timeout"
+							exit 1
+						}
 					}
 				}
+				"C-Kermit>" {
+					    puts "line drop"
+					    send "quit\r"
+					    break
+				}
+				$UPROMPT {
+					puts "OK - at u-boot already"				 
+					return;
+				}
 			}
-			"C-Kermit>" {
-				    puts "line drop"
-				    send "quit\r"
-				    break
-			}
-			$UPROMPT {
-				puts "OK - at u-boot already"				 
-				return;
-			}
+			puts "waiting for boot"
 		}
-		puts "waiting for boot"
-	}
 	}
 }
 
-proc set_uboot_env {devspec model serial} {
+proc set_uboot_env {devspec model serial cmds} {
 	global connections UPROMPT
 
 	if {![is_valid_model $model $serial]} {
@@ -260,7 +265,7 @@ proc set_uboot_env {devspec model serial} {
 	puts "now set a bunch of environment variables\n"
 
 	set spawn_id $connections($devspec)
-	foreach {cmd} [build_env] {
+	foreach {cmd} $cmds  {
 		send "$cmd\r"
 		expect {
 			$UPROMPT {
@@ -345,9 +350,10 @@ lassign $fields model serial
 set tty /dev/tty_$devspec
 switch $command {
 	load { 
-		set_uboot_env $tty $model $serial 
+		set_uboot_env $tty $model $serial [build_env]
 		do_label $model $serial
 	}
+	release { set_uboot_env $tty $model $serial [release_env]
 	show { show_uboot_env  $tty }
 	manual { manual $tty }
 	dry-run { dummy_run $model $serial }
