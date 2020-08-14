@@ -255,7 +255,7 @@ proc connect {mytty} {
 	}
 }
 
-proc set_uboot_env {devspec model serial cmds} {
+proc set_uboot_env {devspec model serial cmds message} {
 	global connections UPROMPT
 
 	if {![is_valid_model $model $serial]} {
@@ -315,7 +315,7 @@ proc set_uboot_env {devspec model serial cmds} {
 		}
 	}
 
-	puts "now wait for boot to EBREAK"
+	puts $message
 	set timeout 300
 	set date_set 0
         while { $date_set < 3 } {
@@ -383,11 +383,11 @@ if {![is_valid_model $model $serial]} {
 set tty /dev/tty_$devspec
 switch $command {
 	load { 
-		set_uboot_env $tty $model $serial [build_env]
+		set_uboot_env $tty $model $serial [build_env] "now wait for boot to EBREAK"
 		puts "Print a Label"
 		do_label $model $serial
 	}
-	release { set_uboot_env $tty $model $serial [release_env] }
+	release { set_uboot_env $tty $model $serial [release_env] "now wait for full boot to ACQ400" }
 	show { show_uboot_env  $tty }
 	manual { manual $tty }
 	dry-run { dummy_run $model $serial }
