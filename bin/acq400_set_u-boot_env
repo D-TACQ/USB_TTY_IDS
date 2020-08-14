@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set VERSION R1009
+set VERSION R1010
 puts "acq400_set_u-boot_env pgm $VERSION"
 
 proc has_eth1 {model} {
@@ -189,7 +189,6 @@ proc do_label {model serial} {
 	global CMDS DTSN
 	set label {| }
 	if {[is_valid_model $model $serial]} {
-		build_env
 		append label "model: $model "
 		append label "sn: $DTSN"	
 		append label { } "mac0: " [get_eth_addr 0]
@@ -243,6 +242,12 @@ proc connect {mytty} {
 				$UPROMPT {
 					puts "OK - at u-boot already"				 
 					return;
+				}
+				"EBREAK / #" {
+					puts "at EBREAK prompt : DROP the line"
+					puts "either power off before running this script"
+					puts "or connect direct from kermit if UUT maintenance required"
+					exit 1
 				}
 			}
 			puts "waiting for boot"
@@ -309,6 +314,29 @@ proc set_uboot_env {devspec model serial cmds} {
 			puts "dropping out to u-boot prompt on timeout"
 		}
 	}
+
+	puts "now wait for boot to EBREAK"
+	set timeout 300
+	set date_set 0
+        while { $date_set < 3 } {
+        	expect {
+			"EBREAK / #" {
+				if { $date_set == 0 } {
+					puts "At EBREAK, set date"
+       			                set dc [exec make-acq400-date]
+                     			send "$dc\r"
+					set date_set 1
+				} elseif { $date_set == 1 } {
+					send "date\r"
+					set date_set 2
+				} else {
+					puts "dropping out to EBREAK"
+					set date_set 3
+				}
+			}	
+		
+                }
+        }
 	puts "to drop the line: CTRL-\\cquit \[control-backslash c quit\]"
 	interact
 }
@@ -356,6 +384,7 @@ set tty /dev/tty_$devspec
 switch $command {
 	load { 
 		set_uboot_env $tty $model $serial [build_env]
+		puts "Print a Label"
 		do_label $model $serial
 	}
 	release { set_uboot_env $tty $model $serial [release_env] }
