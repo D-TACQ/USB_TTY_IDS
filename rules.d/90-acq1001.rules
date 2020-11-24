@@ -418,3 +418,8 @@ SUBSYSTEMS=="usb", ATTRS{serial}=="A908M7GU", SYMLINK+="tty_acq1001_431" RUN+="/
 SUBSYSTEMS=="usb", ATTRS{serial}=="A908M7K2", SYMLINK+="tty_acq1001_432" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A908M7GM", SYMLINK+="tty_acq1001_433" RUN+="/usr/local/bin/make-tty-symlink"
 SUBSYSTEMS=="usb", ATTRS{serial}=="A908M7GN", SYMLINK+="tty_acq1001_434" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AU01ARJT", SYMLINK+="tty_acq1001_445" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AU01ARKQ", SYMLINK+="tty_acq1001_446" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AU01BP74", SYMLINK+="tty_acq1001_447" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AU01BOIT", SYMLINK+="tty_acq1001_448" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="AU01BN5E", SYMLINK+="tty_acq1001_449" RUN+="/usr/local/bin/make-tty-symlink"
