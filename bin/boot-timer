@@ -1,0 +1,50 @@
+#!/usr/bin/expect
+
+set timeout -1
+set UPROMPT {acq200>}
+
+set S_tty {}
+
+proc boottimer:connect {mytty} {
+        global UPROMPT connections expect_out S_tty
+        spawn $mytty
+
+        set connections($mytty) $spawn_id
+        set S_tty $mytty
+
+	set t0 [clock clicks -millisec]
+	set ttotal 0
+
+	while {1} {
+	        expect {
+			".*\n" {
+				set t1 [clock clicks -milisec]
+				set tdiff [expr $t1 - $t0]
+				set ttotal [expr $ttotal + $tdiff]				
+				puts "$ttotal $tdiff $expect_out(buffer)
+			}
+			timeout {
+				puts "Timeout"
+				exit 1
+			}
+		}
+        }
+}
+
+set argc [llength $argv]
+
+if {$argc < 1} {
+        puts "boottimer TTY [timeout]"
+        exit -1
+}
+set TTY [lindex $argv 0]
+
+if {$argc >= 2} {
+	set timeout [lindex $argv 1]
+}
+
+
+
+
+boottimer:connect $TTY
+

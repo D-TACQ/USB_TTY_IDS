@@ -1,0 +1,2 @@
+#!/bin/bash
+date  -u +"date -s '%Y-%m-%d %H:%M'"
