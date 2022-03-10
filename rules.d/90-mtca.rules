@@ -1,2 +1,4 @@
 SUBSYSTEMS=="usb", ATTRS{serial}=="0097D66C", ENV{ID_USB_INTERFACE_NUM}=="00", SYMLINK+="tty_z7io_001_mmc" RUN+="/usr/local/bin/make-tty-symlink"
-SUBSYSTEMS=="usb", ATTRS{serial}=="0097D66C", ENV{ID_USB_INTERFACE_NUM}=="01", SYMLINK+="tty_z7io_001" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="0097D66C", ENV{ID_USB_INTERFACE_NUM}=="01", SYMLINK+="tty_z7io_001"     RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="01173B3E", ENV{ID_USB_INTERFACE_NUM}=="00", SYMLINK+="tty_z7io_011_mmc" RUN+="/usr/local/bin/make-tty-symlink"
+SUBSYSTEMS=="usb", ATTRS{serial}=="01173B3E", ENV{ID_USB_INTERFACE_NUM}=="01", SYMLINK+="tty_z7io_011"     RUN+="/usr/local/bin/make-tty-symlink"
